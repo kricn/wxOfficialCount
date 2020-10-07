@@ -13,8 +13,6 @@ module.exports = async () => {
 		]
 	})
 
-	console.log(movies)
-
 	for (let i=0; i<movies.length; i++) {
 		let movie = movies[i]
 		let url = movie.image

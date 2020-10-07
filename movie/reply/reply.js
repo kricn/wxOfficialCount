@@ -59,7 +59,7 @@ module.exports = async message => {
 			options.msgType = "news"
 			options.mediaId = message.MediaId
 			recognition = message.Recognition.slice(0, -1)
-			let searchBooksUrl = `${searchBooks}?q=${encodeURI(recognition)}`
+			let queryUrl = `${searchBooks}?q=${encodeURI(recognition)}`
 			const data = await rp({
 				method: "GET",
 				url: queryUrl,

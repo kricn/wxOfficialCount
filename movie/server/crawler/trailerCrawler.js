@@ -24,17 +24,20 @@ module.exports = async () => {
   	const list = $("#content .coming_list tbody > tr") 
   	for (let i=0; i<list.length; i++) {
   		const trDom = $(list[i])
-      const num = trDom.last().html()
+      const num = parseInt(trDom.find("td").last().html())
       if(num > 100) {
-        let href = trDom.eq(1).find("a").attr("href")
+        var href = trDom.find("td").eq(1).find("a").attr("href")
+      
+        result.push({
+          href
+        })
       }
-  		result.push({
-  			href
-  		})
   	}
   	return result
   })
-  
+
+  let moviesData = []
+
   for (let i=0; i<res.length; i++) {
     let item = res[i]
     let url = item.href
@@ -43,21 +46,57 @@ module.exports = async () => {
     });
 
     itemRes = await page.evaluate(() => {
-      let genre = []
-      const $genre = $('[property="v:genre"]')
-      for (let j=0; j<$genre.length; j++){
-        genre.push($genre[j].innerText)
+      function circleDom(dom) {
+        let res = []
+        for ( let i=0; i<dom.length; i++) {
+          res.push(dom[i].innerHTML)
+        }
+        return res
       }
-      const summary = $('[property="v:summary"]').html().replace(/\s+/g, "")
-
-      return {genre, summary}
+      let title = $("[property='v:itemreviewed']").html()
+      let directors = circleDom($("[rel='v:directedBy'"))
+      let casts = circleDom($("[rel='v:starring']"))
+      let genre = circleDom($("[property='v:genre']"))
+      let summary = $("[property='v:summary']").html().replace(/\s+/g, "")
+      let releaseDate = circleDom($("[property='v:initialReleaseDate']"))
+      let runtime = $("[property='v:runtime']").html()
+      let rating = $("[property='v:average']").html()
+      let href = $(".related-pic-video").attr("href")
+      let cover = $(".related-pic-video").attr("background-image")
+      return {
+        title,
+        directors,
+        casts,
+        genre, 
+        summary,
+        releaseDate,
+        runtime,
+        rating,
+        href,
+        cover
+      }
     })
+    moviesData.push(itemRes)
+  }
 
-    item.genre = itemRes.genre
-    item.summary = itemRes.summary
+  console.log(moviesData)
+
+  for (let i=0; i<moviesData.length; i++) {
+    let item = moviesData[i]
+    let url = item.href?item.href:""
+    if (url) {
+      await page.goto(url, {
+        waitUntil: "networkidle2"
+      });
+  
+      item.link = await page.evaluate(() => {
+        return link = $("video>source").attr("src")
+      })
+    }
+
   }
 
   await browser.close();
 
-  return res
+  return moviesData
 }
