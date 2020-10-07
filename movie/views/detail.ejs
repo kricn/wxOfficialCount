@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	 <meta name="referrer" content="no-referrer" /> 
+	 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<title>wxofficial--<%= data.title %></title>
+
+	<style type="text/css">
+		*{ margin: 0; padding: 0; font-family: Microsoft YaHei; }
+		.l {
+			float: left;
+		}
+		.r {
+			float: right;
+		}
+		.margin_25 {
+			margin: 25px;
+		}
+
+		.movie_info {
+			display: flex;
+			justify-content: flex-start;
+		}
+		.title {
+			font-size: 2rem;
+			font-weight: 900;
+			margin-bottom: 1rem;
+		}
+		.movie_info__left {
+			width: 50%;
+		}
+		.movie_info__left img {
+			display: block;
+			width: 100%;
+		}
+		.movie_info__right {
+			margin-left: 15px;
+		}
+		.movie_info__right p {
+			font-size: .8rem;
+			margin-bottom: 10px;
+		}
+		.summary {
+			margin-top: 1rem;
+		}
+	</style>
+
+</head>
+<body>
+	<div class="container margin_25">
+		<div class="title"><%= data.title %></div>
+		<div class="movie_info">
+			<div class="movie_info__left">
+				<img src="<%= qiniuZone %>/<%= data.posterKey %>">
+			</div>
+			<div class="movie_info__right">
+				<p>导演：<%= data.directors %></p>
+				<p>主演：<%= data.casts %></p>
+				<p>评分：<%= data.rating %></p>
+				<p>时长：<%= data.runtime %></p>
+				<p>类型：<%= data.genre %></p>
+				<p>上映日期：<%= data.releaseDate %></p>
+			</div>
+		</div>
+		<div class="summary">
+			<p style="color: #abcdef">剧情简介 >></p>
+			<p class="summary_txt">
+				<%- data.summary.replace("/&lt;/g", "<").replace("/&gt;/", ">") %>
+			</p>			
+		</div>
+	</div>
+</body>
+</html>

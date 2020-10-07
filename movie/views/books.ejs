@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="referrer" content="no-referrer" /> 
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<title>wxoffice-<%= q %></title>
+</head>
+<body>
+	<div class="container">
+		<% data.forEach(books => { %>
+			<div class="title"><%= books.title %></div>
+			<div class="book_info">
+				<div class="book_info_left">
+					<img src="<%= books.image %>">
+				</div>
+				<div class="book_info__right">
+					<p>作者：<%= books.author.join(" / ") %>
+					</p>
+					<p>出版社：<%= books.publisher %></p>
+					<p>译者：<%= books.translator.join(" / ")%>
+					</p>
+					<p>页数：<%= books.pages %></p>
+					<p>出版年：<%= books.pubdate %></p>
+					<p>定价：<%= books.price %></p>
+				</div>
+			</div>
+			<% if ( books.summary ) { %>
+				<div class="summary">
+					<p>内容简介</p>
+					<p>
+						<%- books.summary %>
+					</p>
+				</div>
+			<% } %>
+		<% }) %>
+	</div>
+</body>
+</html>

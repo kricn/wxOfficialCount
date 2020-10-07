@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="referrer" content="no-referrer" /> 
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<title>wxofficial--热门电影推荐</title>
+
+	<style type="text/css">
+		*{ padding: 0; margin: 0; font-family: Microsoft YaHei }
+		ul, li, ol, li { list-style: none }
+		a { text-decoration: none; }
+		a:link {color:#000;} 
+		a:visited {color:#001ba0;} 
+		a:hover {color:#001ba0; text-decoration: underline;} 
+		a:active {color:#600090;} 
+		.container {
+			width: 90%;
+			margin: 1rem auto;
+		}
+		.theaters_item {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			margin: 1rem 0;
+			padding: .6rem;
+			border: 1px solid #abcdef;
+			border-radius: 1rem;
+		}
+		.theaters_item>a {
+			display: block;
+			width: 30%;
+			margin-right: 1rem;
+		}
+		.theaters_item a img {
+			width: 100%;
+			display: block;
+			border-radius: 1rem;
+			font-size: 0;
+		}
+		.theaters_item .title {
+			display: block;
+			font-size: 1.5rem;
+			font-weight: 600;
+			margin-bottom: 1rem;
+		}
+	</style>
+
+</head>
+<body>
+	<div class="container">
+		<p style="margin-bottom: 1rem;">热门电影推荐</p>
+		<ul>
+			<% data.forEach(function (item) { %>
+				<li class="theaters_item">
+					<a href="<%= url %>/detail/<%= item.doubanId %>">
+						<img src="<%= qiniuZone %>/<%= item.posterKey %>">
+					</a>
+					<div>
+						<div class="title">
+							<a href="<%= url %>/detail/<%= item.doubanId %>">
+								<%= item.title %>
+							</a>
+						</div>
+						<p><%= item.genre %></p>
+					</div>
+				</li>
+			<% }) %>
+		</ul>
+	</div>
+</body>
+</html>
