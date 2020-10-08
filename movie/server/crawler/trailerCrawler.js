@@ -43,7 +43,7 @@ module.exports = async () => {
     let url = item.href
     await page.goto(url, {
       waitUntil: "networkidle2"
-    });
+    })
 
     itemRes = await page.evaluate(() => {
       function circleDom(dom) {
@@ -54,15 +54,17 @@ module.exports = async () => {
         return res
       }
       let title = $("[property='v:itemreviewed']").html()
-      let directors = circleDom($("[rel='v:directedBy'"))
+      let directors = circleDom($("[rel='v:directedBy']"))
       let casts = circleDom($("[rel='v:starring']"))
       let genre = circleDom($("[property='v:genre']"))
       let summary = $("[property='v:summary']").html().replace(/\s+/g, "")
       let releaseDate = circleDom($("[property='v:initialReleaseDate']"))
       let runtime = $("[property='v:runtime']").html()
+      let image = $("[property='v:image']").attr("src")
+      let doubanId = $(".a_show_login.lnk-sharing").attr("share-id")
       let rating = $("[property='v:average']").html()
       let href = $(".related-pic-video").attr("href")
-      let cover = $(".related-pic-video").attr("background-image")
+      let cover = $(".related-pic-video").css("background-image")?$(".related-pic-video").css("background-image").slice(5,-2):""
       return {
         title,
         directors,
@@ -71,6 +73,8 @@ module.exports = async () => {
         summary,
         releaseDate,
         runtime,
+        image,
+        doubanId,
         rating,
         href,
         cover
@@ -78,12 +82,10 @@ module.exports = async () => {
     })
     moviesData.push(itemRes)
   }
-
-  console.log(moviesData)
-
+  
   for (let i=0; i<moviesData.length; i++) {
     let item = moviesData[i]
-    let url = item.href?item.href:""
+    let url = item.href || undefined
     if (url) {
       await page.goto(url, {
         waitUntil: "networkidle2"

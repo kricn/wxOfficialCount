@@ -3,24 +3,34 @@
 const Theaters = require("../../model/Theaters.js")
 const upload = require("./upload")
 const {nanoid} = require("nanoid")
-module.exports = async () => {
+module.exports = async (key, Model) => {
 
-	const movies = await Theaters.find({
+	const movies = await Model.find({
 		$or: [
-			{posterKey: ""},
-			{posterKey: null},
-			{posterKey: {$exists: false}}
+			{[key]: ""},
+			{[key]: null},
+			{[key]: {$exists: false}}
 		]
 	})
 
 	for (let i=0; i<movies.length; i++) {
 		let movie = movies[i]
 		let url = movie.image
-		let key = `${nanoid(10)}.${url.split(".").slice(-1).join("")}`
+		if (key == "coverKey") {
+			url = movie.cover
+		} else if (key == "videoKey"){
+			url = movie.link
+		}
+		let qiniuKey = ""
+		if (url) {
+			qiniuKey = `${nanoid(10)}.${url.split(".").slice(-1).join("")}`
+		}
 		//上传
-		await upload(url, key)
+		if (qiniuKey) {
+			await upload(url, qiniuKey)
 
-		movie.posterKey = key
+			movie[key] = qiniuKey
+		}
 
 		await movie.save()
 

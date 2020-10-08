@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="referrer" content="no-referrer" /> 
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<title>wxofficial--首页预告片</title>
+
+	<style type="text/css">
+		*{ padding: 0; margin: 0; font-family: Microsoft YaHei }
+		ul, li, ol, li { list-style: none }
+		a { text-decoration: none; }
+		a:link {color:#000;} 
+		a:visited {color:#001ba0;} 
+		a:hover {color:#001ba0; text-decoration: underline;} 
+		a:active {color:#600090;}
+
+        .header{
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 5rem;
+            padding: 0 1rem;
+        }
+        .header button {
+            width: 5rem;
+            height: 2rem;
+            background: transparent;
+            border: 0;
+            border: 1px solid #fff;
+            border-radius: .5rem;
+            color: #fff;
+        }
+
+        .movie{
+            width: 100%;
+        }
+
+        .movie img {
+            width: 100%;
+        }
+
+        .movie .show_deatil {
+            background: transparent;
+            color: #abcdef;
+            border: 0;
+            outline: none;
+            background: #eee;
+            width: 100%;
+            text-align: left;
+            line-height: 2rem;
+            padding-left: .5rem;
+            margin-top: .5rem;
+        }
+
+        .movie .movie_detail {
+            display: none;
+        }
+        .movie_title, .movie_summary, .movie_detail {
+            padding: 0 .5rem;
+        }
+	</style>
+
+</head>
+<body>
+	<div class="container">
+        <div class="header">
+            <div class="title">电影首页预告片</div>
+            <div class="search">
+                <button>搜索</button>
+            </div>
+        </div>
+        <div class="main">
+            <div class="movie">
+                <img class="movie_cover" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602174221012&di=6ac9901fb445b339739f40da62eb54a8&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D1307125826%2C3433407105%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D5760%26h%3D3240" alt="">
+                <div class="movie_info">
+                    <h2 class="movie_title">title</h2>
+                    <div class="movie_summary">&nbsp;&nbsp;&nbsp;&nbsp;this is a summary</div>
+                    <button class="show_deatil">点击查看详情</button>
+                    <ul class="movie_detail">
+                        <li>导演：</li>
+                        <li>主演：</li>
+                        <li>评分：</li>
+                        <li>类型：</li>
+                        <li>上映时间：</li>
+                        <li>片长：</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        window.onload = () => {
+            const show_deatil = document.getElementsByClassName("show_deatil")
+            for ( let i=0; i<show_deatil.length; i++ ) {
+                show_deatil[i].addEventListener("click", function () {
+                    if (this.parentNode.getElementsByClassName("movie_detail")[0].style.display == "block" ) {
+                        this.parentNode.getElementsByClassName("movie_detail")[0].style.display =  "none"
+                    } else {
+                        this.parentNode.getElementsByClassName("movie_detail")[0].style.display =  "block"
+                    }
+                })
+            }
+        }
+    </script>
+</body>
+</html>

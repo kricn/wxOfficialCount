@@ -1,15 +1,21 @@
 const db = require("../db")
-const theatersCrawler = require("./crawler/theatersCrawler.js");
-const trailerCrawler = require("./crawler/trailerCrawler.js");
+const theatersCrawler = require("./crawler/theatersCrawler.js")
+const trailerCrawler = require("./crawler/trailerCrawler.js")
 const saveTheaters = require("./save/saveTheaters.js")
+const saveTrailer = require("./save/saveTrailer.js")
 const qiniuUpload = require("./qiniu")
+const Theaters = require("../model/Theaters.js")
+const Trailer = require("../model/Trailer.js")
 
 ;(async () => {
-	// await db
-	// const data = await theatersCrawler()
-	const data = await trailerCrawler()
-	console.log(data)
-	// await saveTheaters(data)
-	// await qiniuUpload()
+	await db
+	const theatersData = await theatersCrawler()
+	const trailerDate = await trailerCrawler()
+	await saveTheaters(theatersData)
+	await saveTrailer(trailerDate)
+	await qiniuUpload("posterKey", Theaters)
+	await qiniuUpload("coverKey", Trailer)
+	await qiniuUpload("videoKey", Trailer)
+	await qiniuUpload("posterKey", Trailer)
 	console.log("end")
 })()

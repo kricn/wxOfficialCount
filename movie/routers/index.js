@@ -87,7 +87,9 @@ router.get("/books/search/:q", async (req, res) => {
 })
 
 router.get("/index", async (req, res) => {
-	res.render("index")
+	res.render("movie", {
+
+	})
 })
 
 
