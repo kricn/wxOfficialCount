@@ -8,6 +8,7 @@ const reply = require("../reply")
 const Wechat = require("../wechat/wechat.js")
 const {url, appID, searchBooks, qiniuZone} = require("../config")
 const Theaters = require("../model/Theaters.js")
+const Trailer = require("../model/Trailer.js")
 
 const wechatApi = new Wechat()
 
@@ -87,8 +88,15 @@ router.get("/books/search/:q", async (req, res) => {
 })
 
 router.get("/index", async (req, res) => {
+	const data = await Trailer.find({}, {
+		_id: 0,
+		__v: 0,
+		createTime: 0
+	})
 	res.render("movie", {
-
+		data,
+		url,
+		qiniuZone
 	})
 })
 

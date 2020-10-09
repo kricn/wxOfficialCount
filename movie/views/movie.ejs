@@ -73,22 +73,25 @@
             </div>
         </div>
         <div class="main">
-            <div class="movie">
-                <img class="movie_cover" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602174221012&di=6ac9901fb445b339739f40da62eb54a8&imgtype=0&src=http%3A%2F%2Ft9.baidu.com%2Fit%2Fu%3D1307125826%2C3433407105%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D5760%26h%3D3240" alt="">
-                <div class="movie_info">
-                    <h2 class="movie_title">title</h2>
-                    <div class="movie_summary">&nbsp;&nbsp;&nbsp;&nbsp;this is a summary</div>
-                    <button class="show_deatil">点击查看详情</button>
-                    <ul class="movie_detail">
-                        <li>导演：</li>
-                        <li>主演：</li>
-                        <li>评分：</li>
-                        <li>类型：</li>
-                        <li>上映时间：</li>
-                        <li>片长：</li>
-                    </ul>
+            <% data.forEach(item => { %>
+                <div class="movie">
+                    <p><%=encodeURI(item.coverKey)%></p>
+                    <img class="movie_cover" src="<%= qiniuZone %>/<%= encodeURI(item.posterKey) %>">
+                    <div class="movie_info">
+                        <h2 class="movie_title"><%= item.title %></h2>
+                        <div class="movie_summary">&nbsp;&nbsp;&nbsp;&nbsp;<%= item.summary %></div>
+                        <button class="show_deatil">点击查看详情</button>
+                        <ul class="movie_detail">
+                            <li>导演：</li>
+                            <li>主演：</li>
+                            <li>评分：</li>
+                            <li>类型：</li>
+                            <li>上映时间：</li>
+                            <li>片长：</li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            <% }) %>
         </div>
     </div>
     

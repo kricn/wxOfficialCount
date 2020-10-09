@@ -16,14 +16,16 @@ module.exports = async (key, Model) => {
 	for (let i=0; i<movies.length; i++) {
 		let movie = movies[i]
 		let url = movie.image
+		let filename = ".jpg"
 		if (key == "coverKey") {
 			url = movie.cover
 		} else if (key == "videoKey"){
 			url = movie.link
+			filename=".mp4"
 		}
 		let qiniuKey = ""
 		if (url) {
-			qiniuKey = `${nanoid(10)}.${url.split(".").slice(-1).join("")}`
+			qiniuKey = `${nanoid(10)}${filename}`
 		}
 		//上传
 		if (qiniuKey) {

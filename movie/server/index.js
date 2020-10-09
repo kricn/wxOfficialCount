@@ -10,9 +10,10 @@ const Trailer = require("../model/Trailer.js")
 ;(async () => {
 	await db
 	const theatersData = await theatersCrawler()
-	const trailerDate = await trailerCrawler()
+	const trailerData = await trailerCrawler()
 	await saveTheaters(theatersData)
-	await saveTrailer(trailerDate)
+	await saveTrailer(trailerData)
+	console.log(trailerData)
 	await qiniuUpload("posterKey", Theaters)
 	await qiniuUpload("coverKey", Trailer)
 	await qiniuUpload("videoKey", Trailer)

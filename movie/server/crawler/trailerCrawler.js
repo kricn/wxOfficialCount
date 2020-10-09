@@ -60,7 +60,7 @@ module.exports = async () => {
       let summary = $("[property='v:summary']").html().replace(/\s+/g, "")
       let releaseDate = circleDom($("[property='v:initialReleaseDate']"))
       let runtime = $("[property='v:runtime']").html()
-      let image = $("[property='v:image']").attr("src")
+      let image = $("[rel='v:image']").attr("src")
       let doubanId = $(".a_show_login.lnk-sharing").attr("share-id")
       let rating = $("[property='v:average']").html()
       let href = $(".related-pic-video").attr("href")
