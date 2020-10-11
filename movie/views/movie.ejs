@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 	<title>wxofficial--首页预告片</title>
 
+    <link href="https://cdn.bootcdn.net/ajax/libs/dplayer/1.9.1/DPlayer.min.css" rel="stylesheet">
 	<style type="text/css">
 		*{ padding: 0; margin: 0; font-family: Microsoft YaHei }
 		ul, li, ol, li { list-style: none }
@@ -14,6 +15,10 @@
 		a:visited {color:#001ba0;} 
 		a:hover {color:#001ba0; text-decoration: underline;} 
 		a:active {color:#600090;}
+        html,body {
+            width: 100%;
+            position: relative;
+        }
 
         .header{
             background: #000;
@@ -36,6 +41,7 @@
 
         .movie{
             width: 100%;
+            padding-bottom: 1rem;
         }
 
         .movie img {
@@ -55,11 +61,30 @@
             margin-top: .5rem;
         }
 
-        .movie .movie_detail {
-            display: none;
+        .movie .movie_detail div{
+            margin: .5rem 0;
         }
-        .movie_title, .movie_summary, .movie_detail {
+        .movie_title, .movie_summary, .movie_detail, .update_time {
             padding: 0 .5rem;
+        }
+
+        .video_mask {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background: rgba(200, 200, 200, .5);
+            top: 0;
+            display: none;
+            align-items: center;
+            z-index: 10;
+        }
+        #dplayer {
+            width: 100%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            z-index: 999;
+            transform: translate(-50%, -50%);
         }
 	</style>
 
@@ -75,39 +100,84 @@
         <div class="main">
             <% data.forEach(item => { %>
                 <div class="movie">
-                    <p><%=encodeURI(item.coverKey)%></p>
-                    <img class="movie_cover" src="<%= qiniuZone %>/<%= encodeURI(item.posterKey) %>">
+                    <img class="movie_cover" src="<%= qiniuZone %>/<%= encodeURI(item.posterKey) %>"
+                      cover="<%= qiniuZone %>/<%= encodeURI(item.coverKey) %>" 
+                      video="<%= qiniuZone %>/<%= encodeURI(item.videoKey) %>"
+                      doubanId = "<%= item.doubanId %>"
+                    >
                     <div class="movie_info">
                         <h2 class="movie_title"><%= item.title %></h2>
                         <div class="movie_summary">&nbsp;&nbsp;&nbsp;&nbsp;<%= item.summary %></div>
-                        <button class="show_deatil">点击查看详情</button>
-                        <ul class="movie_detail">
-                            <li>导演：</li>
-                            <li>主演：</li>
-                            <li>评分：</li>
-                            <li>类型：</li>
-                            <li>上映时间：</li>
-                            <li>片长：</li>
-                        </ul>
+                        <details class="movie_detail">
+                            <summary>点击查看详情</summary>
+                            <div>导演：<%= item.directors %></div>
+                            <div>主演：<%= item.casts %></div>
+                            <div>评分：<%= item.rating %></div>
+                            <div>类型：<%= item.genre %></div>
+                            <div>上映时间：<%= item.releaseDate %></div>
+                            <div>片长：<%= item.runtime %></div>
+                        </details>                        
                     </div>
+                    <div class="update_time"><%= Math.ceil((Date.now() - item.createTime)/8640000) %>天前更新</div>
                 </div>
             <% }) %>
         </div>
     </div>
     
+    <div class="video_mask" id="video_mask"></div>
+    <div id="dplayer"></div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/dplayer/1.9.1/DPlayer.min.js"></script>
     <script>
-        window.onload = () => {
-            const show_deatil = document.getElementsByClassName("show_deatil")
-            for ( let i=0; i<show_deatil.length; i++ ) {
-                show_deatil[i].addEventListener("click", function () {
-                    if (this.parentNode.getElementsByClassName("movie_detail")[0].style.display == "block" ) {
-                        this.parentNode.getElementsByClassName("movie_detail")[0].style.display =  "none"
-                    } else {
-                        this.parentNode.getElementsByClassName("movie_detail")[0].style.display =  "block"
-                    }
-                })
+        const movie_cover = document.getElementsByClassName("movie_cover")
+        const video_mask = document.getElementById("video_mask")
+        const video_container = document.getElementById('dplayer')
+        let dp = null
+        for (let i=0; i<movie_cover.length; i++) {
+            movie_cover[i].onclick = function () {
+                const cover = this.getAttribute("cover").split("/").slice(-1).join("")!="undefined"?this.getAttribute("cover"):""
+                const video = this.getAttribute("video").split("/").slice(-1).join("")!="undefined"?this.getAttribute("video"):""
+                const doubanId = this.getAttribute("doubanId")
+                if (!cover && !video) {
+                    alert("该视频没有预告片QWQ")
+                    return false
+                }
+                video_mask.style.display = "block"
+                video_container.style.display = "block"
+                if( !dp ) {
+                    dp = new DPlayer({
+                        element: document.getElementById('dplayer'),
+                        video: {
+                            url: video,
+                            pic: cover,
+                            thumbnails: cover,
+                        },
+                        danmaku: {
+                            id: doubanId,
+                            api: 'http://localhost:3009/v3/'
+                        },
+                    });
+                } else {
+                    dp.switchVideo(
+                        {
+                            url: video,
+                            pic: cover,
+                            thumbnails: cover,
+                        },
+                        {
+                            id: doubanId,
+                            api: 'http://localhost:3009/v3/',
+                            maximum: 3000,
+                            user: 'DIYgod',
+                        }
+                    );
+                }
             }
         }
+        video_mask.addEventListener("click", function () {
+            video_mask.style.display = "none"
+            dp.pause()
+            video_container.style.display = "none"
+        }, true)
     </script>
 </body>
 </html>

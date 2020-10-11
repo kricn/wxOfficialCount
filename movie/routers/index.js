@@ -9,6 +9,7 @@ const Wechat = require("../wechat/wechat.js")
 const {url, appID, searchBooks, qiniuZone} = require("../config")
 const Theaters = require("../model/Theaters.js")
 const Trailer = require("../model/Trailer.js")
+const Danmus = require("../model/Danmus.js")
 
 const wechatApi = new Wechat()
 
@@ -90,13 +91,65 @@ router.get("/books/search/:q", async (req, res) => {
 router.get("/index", async (req, res) => {
 	const data = await Trailer.find({}, {
 		_id: 0,
-		__v: 0,
-		createTime: 0
+		__v: 0
 	})
 	res.render("movie", {
 		data,
 		url,
 		qiniuZone
+	})
+})
+
+//加载弹幕路由
+router.get("/v3", async (req, res) => {
+	const { id } = req.query
+	const data = await Danmus.find({doubanId: id})
+
+	let resData = []
+
+	data.forEach(item => {
+		resData.push([item.time, item.type, item.color, item.author, item.text])
+	})
+
+	res.send({
+		code: 0,
+		data: resData
+	})
+})
+
+router.post("/v3", async (req,res) => {
+	const {
+		player,
+		author,
+		time,
+		text,
+		color,
+		type
+	} = await new Promise((resolve, reject) => {
+		let data = ""
+		req.on("data", chunk => {
+			data += chunk
+		})
+		req.on("end", () => {
+			resolve(JSON.parse(data))
+		})
+		req.on("error", err => {
+			reject(err)
+		})
+	})
+
+	await Danmus.create({
+		doubanId: player,
+		author,
+		time,
+		text,
+		color,
+		type
+	})
+	console.log(type)
+	res.send({
+		code: 0,
+		data: {}
 	})
 })
 
