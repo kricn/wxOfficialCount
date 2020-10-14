@@ -118,7 +118,7 @@
                             <div>片长：<%= item.runtime %></div>
                         </details>                        
                     </div>
-                    <div class="update_time"><%= Math.ceil((Date.now() - item.createTime)/8640000) %>天前更新</div>
+                    <div class="update_time"><%= Math.ceil((Date.now() - item.createTime)/86400000) %>天前更新</div>
                 </div>
             <% }) %>
         </div>

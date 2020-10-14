@@ -6,7 +6,7 @@ const router = new Router()
 const sha1 = require("sha1")
 const reply = require("../reply")
 const Wechat = require("../wechat/wechat.js")
-const {url, appID, searchBooks, qiniuZone} = require("../config")
+const {url, appID, searchBooks, qiniuZone, searchBooksUrl} = require("../config")
 const Theaters = require("../model/Theaters.js")
 const Trailer = require("../model/Trailer.js")
 const Danmus = require("../model/Danmus.js")
@@ -72,12 +72,16 @@ router.get("/detail/:id", async (req, res) => {
 
 router.get("/books/search/:q", async (req, res) => {
 	const { q } = req.params
+	const { voice } = req.query
 	let searchBooksUrl = `${searchBooks}?q=${encodeURI(q)}`
 	const data = await rp({
 		method: "GET",
 		url: searchBooksUrl,
 		json: true
 	})
+	if(voice) {
+		res.send(data)
+	}
 	if( data.total > 0) {
 		res.render("books", {
 			q,
@@ -152,6 +156,7 @@ router.post("/v3", async (req,res) => {
 		data: {}
 	})
 })
+
 
 
 //验证服务器

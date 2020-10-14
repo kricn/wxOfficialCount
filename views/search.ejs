@@ -4,16 +4,53 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 	<title>查询电影</title>
+	<style>
+		* {padding: 0; margin: 0}
+		ul, li {
+			list-style: none;
+		}
+		li {
+			padding: 1rem;
+			border: 1px solid #abcdef;
+			border-radius: 2rem;
+		}
+		.cover {
+			width: 100%;
+			background: #eaeaea;
+			height: 4rem;
+			position: fixed;
+			bottom: 0;
+			left: 50%;
+			transform: translate(-50%, 0);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.container {
+			padding-bottom: 4rem;
+		}
+		#search {
+			width: 4rem;
+			height: 2rem;
+		}
+	</style>
 </head>
 <body>
-	<p id="search">查询电影</p>
-	<ul id="list"></ul>
+	<div class="container">
+		<div class="cover">
+			<button id="search">语音识别</button>
+		</div>
+		<h2 style="text-align: center;">欢迎使用搜索页</h2>
+		<ul class="list">
+		</ul>
+	</div>
 
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdn.bootcdn.net/ajax/libs/zepto/1.0rc1/zepto.min.js"></script>
 	<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
 	<script type="text/javascript">
 		wx.config({
-		  debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+		  debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 		  appId: "<%= appID %>", // 必填，公众号的唯一标识
 		  timestamp: "<%= timestamp %>", // 必填，生成签名的时间戳
 		  nonceStr: "<%= noncestr%>", // 必填，生成签名的随机串
@@ -46,7 +83,7 @@
 
 			let isRecord = false;
 
-		  $("#search").tap(function () {
+		  $("#search").click(function () {
 		  	if(!isRecord) {
 		  		wx.startRecord()
 		  		isRecord = true
@@ -59,8 +96,52 @@
 							  localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
 							  isShowProgressTips: 1, // 默认为1，显示进度提示
 							  success: function (res) {
-							    html = `<li>识别结果是：${res.translateResult}</li>`
-							    $("#list").html(html)
+								  const translateResult = res.translateResult
+								  $.ajax({
+										url: `/books/search/${translateResult}`,
+										type: "get",
+										data: {
+											voice: 1
+										}
+									}).then(res => {
+										let html = ""
+										if(res.total > 0) {
+											res.books.forEach(book => {
+												html += `
+												<li>
+													<div class="title">${book.title}</div>
+														<div class="book_info">
+															<div class="book_info_left">
+																<img src="${book.image}">
+															</div>
+															<div class="book_info__right">
+																<p>作者：${book.author.join("/")}
+																</p>
+																<p>出版社：${book.publisher}</p>
+																<p>译者：${book.translator.join(" / ")}
+																</p>
+																<p>页数：${book.pages}</p>
+																<p>出版年：${book.pubdate}</p>
+																<p>定价：${book.price}</p>
+															</div>
+														</div>`
+												
+												if(book.summary){
+													html += `<details>
+															<summary style="font-size:1.2rem;font-weight:600;">内容简介</summary>
+															<p>
+																${book.summary}
+															</p>
+														</details>	`
+												}
+
+												html += `</li>`
+											})
+										}else{
+											html += `<p>暂时没有该书目</p>`
+										}
+										$(".list").html(html)
+									})
 							  },
 							  fail: function () {
 							  	html = `<li>识别失败<li>`
