@@ -85,7 +85,8 @@ class Wechat {
 		})
 	}
 
-	createMenu (menu) {
+	async createMenu (menu) {
+		await this.deleteMenu()
 		return new Promise (async (resolve, reject) => {
 			try{
 				const data = await this.fetchAccessToken()

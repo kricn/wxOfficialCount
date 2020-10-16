@@ -81,9 +81,11 @@ router.get("/books/search/:q", async (req, res) => {
 	})
 	if(voice) {
 		res.send(data)
+		return ;
 	}
 	if( data.total > 0) {
 		res.render("books", {
+			url,
 			q,
 			data: data.books
 		})

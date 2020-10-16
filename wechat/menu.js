@@ -5,7 +5,7 @@ module.exports = {
     {		
 			"type":"view",
 			"name":"电影推荐🎥",
-			"url":`${url}/movie`
+			"url":`${url}/theaters`
     },
     {
       "type":"view",

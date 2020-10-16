@@ -41,7 +41,6 @@ module.exports = async message => {
 				url: `${url}/index`
 			}]
 		} else {
-			console.log(searchBooks)
 			let searchBooksUrl = `${searchBooks}?q=${encodeURI(message.Content)}`
 			const data = await rp({
 				method: "GET",

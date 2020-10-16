@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-	<title>查询电影</title>
+	<title>查询书目</title>
 	<style>
 		* {padding: 0; margin: 0}
 		ul, li {
@@ -82,7 +82,7 @@
 			});
 
 			let isRecord = false;
-
+			let translateResult = null
 		  $("#search").click(function () {
 		  	if(!isRecord) {
 		  		wx.startRecord()
@@ -96,7 +96,7 @@
 							  localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
 							  isShowProgressTips: 1, // 默认为1，显示进度提示
 							  success: function (res) {
-								  const translateResult = res.translateResult
+								  translateResult = res.translateResult.slice(0,-1)
 								  $.ajax({
 										url: `/books/search/${translateResult}`,
 										type: "get",
@@ -108,6 +108,7 @@
 										if(res.total > 0) {
 											res.books.forEach(book => {
 												html += `
+												<h2>${translateResult}</h2>
 												<li>
 													<div class="title">${book.title}</div>
 														<div class="book_info">
@@ -138,7 +139,7 @@
 												html += `</li>`
 											})
 										}else{
-											html += `<p>暂时没有该书目</p>`
+											html += `<h2>${translateResult}</h2><p>暂时没有该书目</p>`
 										}
 										$(".list").html(html)
 									})
@@ -150,6 +151,8 @@
 							});	    
 					  },
 					  fail: function () {
+						  let html = `<li>识别失败<li>`
+							$("#list").html(html)
 					  },
 					  complete: function () {
 					  }
@@ -158,10 +161,10 @@
 		  	}
 		  })
 		  wx.updateAppMessageShareData({ 
-		    title: '自定义标题', // 分享标题
-		    desc: '自定义描述', // 分享描述
-		    link: 'http://ed3a133618a8.ngrok.io', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-		    imgUrl: '自定义图片链接', // 分享图标
+		    title: translateResult || "书目搜索页", // 分享标题
+		    desc: '奇文共欣赏，疑义相与析~', // 分享描述
+		    link: `${url}/search?q=${translateResult}`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+		    imgUrl: 'https://i2.hdslb.com/bfs/archive/f2ebb29197e5db306418727efcbbb6fe843eef92.jpg@206w_116h_1c_100q.webp', // 分享图标
 		    success: function () {
 		    },
 		    cancel: function () {

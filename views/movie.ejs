@@ -14,7 +14,7 @@
 		a:link {color:#000;} 
 		a:visited {color:#001ba0;} 
 		a:hover {color:#001ba0; text-decoration: underline;} 
-		a:active {color:#600090;}
+		a:active {color:#600090; text-decoration: none;}
         html,body {
             width: 100%;
             position: relative;
@@ -29,7 +29,10 @@
             height: 5rem;
             padding: 0 1rem;
         }
-        .header button {
+        .header a {
+            display: block;
+            text-align: center;
+            line-height: 2rem;
             width: 5rem;
             height: 2rem;
             background: transparent;
@@ -94,7 +97,7 @@
         <div class="header">
             <div class="title">电影首页预告片</div>
             <div class="search">
-                <button>搜索</button>
+                <a href="<%= url %>/search">搜索</a>
             </div>
         </div>
         <div class="main">
