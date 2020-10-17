@@ -130,6 +130,7 @@
     <div class="video_mask" id="video_mask"></div>
     <div id="dplayer"></div>
     <script src="https://cdn.bootcdn.net/ajax/libs/dplayer/1.9.1/DPlayer.min.js"></script>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script>
         const movie_cover = document.getElementsByClassName("movie_cover")
         const video_mask = document.getElementById("video_mask")
@@ -181,6 +182,29 @@
             dp.pause()
             video_container.style.display = "none"
         }, true)
+
+        wx.config({
+		  debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+		  appId: "<%= appID %>", // 必填，公众号的唯一标识
+		  timestamp: "<%= timestamp %>", // 必填，生成签名的时间戳
+		  nonceStr: "<%= noncestr %>", // 必填，生成签名的随机串
+		  signature: "<%= signature %>",// 必填，签名
+		  jsApiList: [
+		  	"updateAppMessageShareData"
+		  ] // 必填，需要使用的JS接口列表
+        });
+        wx.ready(function(){
+            wx.updateAppMessageShareData({ 
+                title: '预告片首页，冲！！', // 分享标题
+                desc: '最新预告片', // 分享描述
+                link: '<%= url %>' + '/index', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: 'https://i0.hdslb.com/bfs/live/new_room_cover/efce8e6292e167c31eafd510de2b4885113fe7a8.jpg@206w_116h_1c_100q.webp', // 分享图标
+                success: function () {
+                },
+                cancel: function () {
+                }
+            })
+        })
     </script>
 </body>
 </html>

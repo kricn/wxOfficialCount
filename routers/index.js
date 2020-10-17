@@ -40,7 +40,8 @@ async function shareConfig (url) {
 
 router.get("/search", async (req, res) => {
 
-	const urlconfig = `${url}/search`
+	//url需要从请求那里拿，在拼上域名，这样保证不会出错，
+	const urlconfig = `${url}${req.url}`
 	const {signature, noncestr, timestamp} = await shareConfig(urlconfig)
 
 	res.render("search", {
@@ -110,6 +111,10 @@ router.get("/books/search/:q", async (req, res) => {
 })
 
 router.get("/index", async (req, res) => {
+
+	const urlconfig = `${url}${req.url}`
+	const {signature, noncestr, timestamp} = await shareConfig(urlconfig)
+
 	const data = await Trailer.find({}, {
 		_id: 0,
 		__v: 0
@@ -117,7 +122,11 @@ router.get("/index", async (req, res) => {
 	res.render("movie", {
 		data,
 		url,
-		qiniuZone
+		qiniuZone,
+		appID,
+		signature,
+		noncestr,
+		timestamp,
 	})
 })
 

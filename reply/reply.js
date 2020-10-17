@@ -36,7 +36,7 @@ module.exports = async message => {
 			options.msgType = "news"
 			content = [{
 				title: "预告片首页，冲！！",
-				description: "最新预先片",
+				description: "最新预告片",
 				picUrl: "https://i0.hdslb.com/bfs/live/new_room_cover/efce8e6292e167c31eafd510de2b4885113fe7a8.jpg@206w_116h_1c_100q.webp",
 				url: `${url}/index`
 			}]
