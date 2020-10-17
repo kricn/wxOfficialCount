@@ -13,27 +13,42 @@ const Danmus = require("../model/Danmus.js")
 
 const wechatApi = new Wechat()
 
-router.get("/search", async (req, res) => {
-	//需要ticket,noncestr(随机字符串),timestamp(时间戳),url(当前服务器地址)
-	const { ticket } = await wechatApi.fetchTicket()
-	//生成随机字符串
-	const noncestr = Math.random().toString().split(".")[1]
-	const timestamp = Date.now()
-	//组合
-	const arr = [
-		`jsapi_ticket=${ticket}`,
-		`noncestr=${noncestr}`,
-		`timestamp=${timestamp}`,
-		`url=${url}/search`
-	]
+async function shareConfig (url) {
+	return new Promise (async resolve => {
+		//需要ticket,noncestr(随机字符串),timestamp(时间戳),url(当前服务器地址)
+		const { ticket } = await wechatApi.fetchTicket()
+		//生成随机字符串
+		const noncestr = Math.random().toString().split(".")[1]
+		const timestamp = Date.now()/1000
+		//组合
+		const arr = [
+			`jsapi_ticket=${ticket}`,
+			`noncestr=${noncestr}`,
+			`timestamp=${timestamp}`,
+			`url=${url}`
+		]
 
-	const signature = sha1(arr.sort().join("&"))
+		const signature = sha1(arr.sort().join("&"))
+
+		resolve({
+			signature,
+			noncestr,
+			timestamp
+		})
+	})
+}
+
+router.get("/search", async (req, res) => {
+
+	const urlconfig = `${url}/search`
+	const {signature, noncestr, timestamp} = await shareConfig(urlconfig)
 
 	res.render("search", {
 		appID,
 		signature,
 		noncestr,
-		timestamp
+		timestamp,
+		url
 	})
 })
 

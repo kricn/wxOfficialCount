@@ -41,19 +41,19 @@
 			<button id="search">语音识别</button>
 		</div>
 		<h2 style="text-align: center;">欢迎使用搜索页</h2>
+		<p><%= url %>/search</p>
 		<ul class="list">
 		</ul>
 	</div>
 
 	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="https://cdn.bootcdn.net/ajax/libs/zepto/1.0rc1/zepto.min.js"></script>
 	<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
 	<script type="text/javascript">
 		wx.config({
-		  debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+		  debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 		  appId: "<%= appID %>", // 必填，公众号的唯一标识
 		  timestamp: "<%= timestamp %>", // 必填，生成签名的时间戳
-		  nonceStr: "<%= noncestr%>", // 必填，生成签名的随机串
+		  nonceStr: "<%= noncestr %>", // 必填，生成签名的随机串
 		  signature: "<%= signature %>",// 必填，签名
 		  jsApiList: [
 		  	"startRecord",
@@ -142,6 +142,16 @@
 											html += `<h2>${translateResult}</h2><p>暂时没有该书目</p>`
 										}
 										$(".list").html(html)
+										wx.updateAppMessageShareData({ 
+											title: translateResult, // 分享标题
+											desc: '奇文共欣赏，疑义相与析~', // 分享描述
+											link: '<%= url %>' + `/books/search/${translateResult}`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+											imgUrl: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3200175604,477905664&fm=26&gp=0.jpg', // 分享图标
+											success: function () {
+											},
+											cancel: function () {
+											}
+										})
 									})
 							  },
 							  fail: function () {
@@ -161,15 +171,16 @@
 		  	}
 		  })
 		  wx.updateAppMessageShareData({ 
-		    title: translateResult || "书目搜索页", // 分享标题
-		    desc: '奇文共欣赏，疑义相与析~', // 分享描述
-		    link: `${url}/search?q=${translateResult}`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-		    imgUrl: 'https://i2.hdslb.com/bfs/archive/f2ebb29197e5db306418727efcbbb6fe843eef92.jpg@206w_116h_1c_100q.webp', // 分享图标
-		    success: function () {
-		    },
-		    cancel: function () {
-		    }
-		  })
+			title: '找你所找，寻你所寻', // 分享标题
+			desc: '给我放大镜！！', // 分享描述
+			link: '<%= url %>' + '/search', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602916409693&di=665897507339d4aa876e7c730e6da3de&imgtype=0&src=http%3A%2F%2Fpics2.baidu.com%2Ffeed%2Fbd315c6034a85edf81702f204ba7a225dc54752a.jpeg%3Ftoken%3D40ea367f6b2ef995eaa6f5faf705a7d4', // 分享图标
+			success: function () {
+			},
+			cancel: function () {
+			}
+		})
+		
 		});
 
 		wx.error(function(res){
